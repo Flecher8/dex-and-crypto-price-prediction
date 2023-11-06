@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ethers } from "ethers";
 
 import { numberToHex } from "./utils/UserMath";
+import WithdrawPage from "./pages/WithdrawPage/WithdrawPage";
 
 function App() {
 	const [showMetaMaskConnectionError, setShowMetaMaskConnectionError] = useState(false);
@@ -81,6 +82,7 @@ function App() {
 					<Routes>
 						<Route path="/Main" element={<MainPage />} />
 						<Route path="/Deposit" element={<DepositPage />} />
+						<Route path="/Withdraw" element={<WithdrawPage />} />
 						<Route path="/" element={<Navigate to="/Main" />} />
 					</Routes>
 				</>
@@ -101,4 +103,3 @@ function App() {
 }
 
 export default App;
-
