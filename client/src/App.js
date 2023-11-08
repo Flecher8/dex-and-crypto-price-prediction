@@ -3,12 +3,17 @@ import "./App.css";
 import Menu from "./components/Menu/Menu";
 import DepositPage from "./pages/DepositPage/DepositPage";
 import MainPage from "./pages/MainPage/MainPage";
+import ErrorAlert from "./components/ErrorAlert/ErrorAlert";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ethers } from "ethers";
 
 import { numberToHex } from "./utils/UserMath";
+import WithdrawPage from "./pages/WithdrawPage/WithdrawPage";
 
 function App() {
+	const [showMetaMaskConnectionError, setShowMetaMaskConnectionError] = useState(false);
+	const [showNetworkConnectionError, setShowNetworkConnectionError] = useState(false);
+
 	useEffect(() => {
 		connectToMetamask().then(switchToMainNetwork());
 	}, []);
@@ -36,10 +41,11 @@ function App() {
 					method: "wallet_switchEthereumChain",
 					params: [{ chainId: "0x" + numberToHex(process.env.REACT_APP_MAIN_NETWORK_ADDRESS) }]
 				});
-				// TODO Throw error if not
+				setShowNetworkConnectionError(false);
 			}
 		} catch (error) {
 			console.error("Error: ", error);
+			setShowNetworkConnectionError(true);
 		}
 	}
 
@@ -47,28 +53,53 @@ function App() {
 		try {
 			if (window.ethereum === undefined) {
 				console.error("EROR, windows under");
+				setShowMetaMaskConnectionError(true);
 			}
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const accounts = await provider.send("eth_requestAccounts", []);
+			const walletAddress = accounts[0];
+			setShowMetaMaskConnectionError(false);
 		} catch (error) {
-			// TODO Global error, user dont connect metamask
 			console.error("Ошибка подключения к MetaMask:", error);
+			setShowMetaMaskConnectionError(true);
+		}
+	}
+
+	function renderRoutes() {
+		if (showMetaMaskConnectionError && showNetworkConnectionError) {
+			return (
+				<ErrorAlert errorText="Both MetaMask and Network Connection Errors. Please check your MetaMask connection and switch to the correct network." />
+			);
+		} else if (showMetaMaskConnectionError) {
+			return (
+				<ErrorAlert errorText="Connection to MetaMask failed. Please make sure you have MetaMask installed and connected." />
+			);
+		} else if (showNetworkConnectionError) {
+			return <ErrorAlert errorText="Network Connection Error. Please switch to the correct network." />;
+		} else {
+			return (
+				<>
+					<Routes>
+						<Route path="/Main" element={<MainPage />} />
+						<Route path="/Deposit" element={<DepositPage />} />
+						<Route path="/Withdraw" element={<WithdrawPage />} />
+						<Route path="/" element={<Navigate to="/Main" />} />
+					</Routes>
+				</>
+			);
 		}
 	}
 
 	return (
 		<div className="App">
-			<BrowserRouter>
-				<Menu />
-				<Routes>
-					<Route path="/Main" element={<MainPage />} />
-					<Route path="/Deposit" element={<DepositPage />} />
-					{/* Default Router */}
-					<Route path="/" element={<Navigate to="/Main" />} />
-				</Routes>
-			</BrowserRouter>
+			{
+				<BrowserRouter>
+					<Menu />
+					{renderRoutes()}
+				</BrowserRouter>
+			}
 		</div>
 	);
 }
 
 export default App;
-

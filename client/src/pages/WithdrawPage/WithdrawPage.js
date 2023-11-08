@@ -6,7 +6,7 @@ import { tokenList } from "../../utils/tokenList";
 
 import { getAbi } from "../../utils/getAbi";
 
-const DepositPage = () => {
+const WithdrawPage = () => {
 	const [selectedCoin, setSelectedCoin] = useState(tokenList[0].address); // Состояние для выбранной монеты
 	const [depositAmount, setDepositAmount] = useState(0); // Состояние для количества монет
 	const [balance, setBalance] = useState(0); // Пример баланса на контракте (замените на реальное значение)
@@ -42,34 +42,31 @@ const DepositPage = () => {
 		setDepositAmount(parseInt(event.target.value));
 	};
 
-	const deposit = async () => {
+	const withdraw = async () => {
 		try {
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
 			const accounts = await provider.send("eth_requestAccounts", []);
 			const walletAddress = accounts[0]; // first account in MetaMask
 			const signer = provider.getSigner(walletAddress);
 
-			const TokenContract = new ethers.Contract(selectedCoin, getAbi(selectedCoin), signer);
-			const balance = await TokenContract.approve(process.env.REACT_APP_EXCHANGE_ADDRESS, depositAmount);
-
 			const ExchangeContract = new ethers.Contract(
 				process.env.REACT_APP_EXCHANGE_ADDRESS,
 				getAbi(process.env.REACT_APP_EXCHANGE_ADDRESS),
 				signer
 			);
-			const deposit = await ExchangeContract.depositToken(selectedCoin, depositAmount);
+			const deposit = await ExchangeContract.withdrawToken(selectedCoin, depositAmount);
 			console.log(deposit);
-			alert(`Sending ${depositAmount}`);
+			alert(`Withdraw ${depositAmount}`);
 		} catch (error) {
 			console.error("Error: ", error);
 		}
-		console.log(`Sending ${depositAmount}`);
+		console.log(`Withdraw ${depositAmount}`);
 	};
 
 	return (
-		<div className="DepositPage">
+		<div className="WithdrawPage">
 			<Container>
-				<h2>Deposit</h2>
+				<h2>Withdraw</h2>
 				<Form>
 					<Form.Group>
 						<Form.Label>Choose Cryptocurrency:</Form.Label>
@@ -96,7 +93,7 @@ const DepositPage = () => {
 									min="1"
 								/>
 							</Form.Group>
-							<Button variant="primary" onClick={deposit}>
+							<Button variant="primary" onClick={withdraw}>
 								Send
 							</Button>
 						</>
@@ -107,4 +104,4 @@ const DepositPage = () => {
 	);
 };
 
-export default DepositPage;
+export default WithdrawPage;
