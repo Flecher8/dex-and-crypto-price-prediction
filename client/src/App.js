@@ -9,6 +9,10 @@ import { ethers } from "ethers";
 
 import { numberToHex } from "./utils/UserMath";
 import WithdrawPage from "./pages/WithdrawPage/WithdrawPage";
+import TransactionPage from "./pages/TransactionsPage/TransactionPage";
+import UserOrders from "./pages/UserOrders/UserOrders";
+import ActiveOrders from "./pages/ActiveOrders/ActiveOrders";
+import ExchangePage from "./pages/ExchangePage/ExchangePage";
 
 function App() {
 	const [showMetaMaskConnectionError, setShowMetaMaskConnectionError] = useState(false);
@@ -83,6 +87,10 @@ function App() {
 						<Route path="/Main" element={<MainPage />} />
 						<Route path="/Deposit" element={<DepositPage />} />
 						<Route path="/Withdraw" element={<WithdrawPage />} />
+						<Route path="/Exchange" element={<ExchangePage />} />
+						<Route path="/Transactions" element={<TransactionPage />} />
+						<Route path="/UserOrders" element={<UserOrders />} />
+						<Route path="/ActiveOrders" element={<ActiveOrders />} />
 						<Route path="/" element={<Navigate to="/Main" />} />
 					</Routes>
 				</>
