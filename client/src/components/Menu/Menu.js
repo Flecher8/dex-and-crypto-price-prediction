@@ -14,6 +14,7 @@ const Menu = () => {
 							<Nav.Link href="/Deposit">Deposit</Nav.Link>
 							<Nav.Link href="/Withdraw">Withdraw</Nav.Link>
 							<Nav.Link href="/Exchange">Exchange</Nav.Link>
+							<Nav.Link href="/Transactions">Transactions</Nav.Link>
 							<Nav.Link href="/AI">AI</Nav.Link>
 						</Nav>
 					</Navbar.Collapse>
