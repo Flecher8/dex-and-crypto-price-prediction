@@ -6,10 +6,10 @@ import { tokenList } from "../../utils/tokenList";
 
 import { getAbi } from "../../utils/getAbi";
 
-const TransactionPage = () => {
+const UserOrders = () => {
 	useEffect(() => {}, []);
 
-	const getTransactions = async () => {
+	const getUserOrders = async () => {
 		try {
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
 			const accounts = await provider.send("eth_requestAccounts", []);
@@ -21,23 +21,23 @@ const TransactionPage = () => {
 				getAbi(process.env.REACT_APP_EXCHANGE_ADDRESS),
 				signer
 			);
-			const transactions = await ExchangeContract.getRecentTransactions(100);
-			console.log(transactions);
+			const userOrders = await ExchangeContract.getUserOrders();
+			console.log(userOrders);
 		} catch (error) {
 			console.error("Error: ", error);
 		}
 	};
 
 	return (
-		<div className="TransactionPage">
+		<div className="UserOrders">
 			<Container>
-				<h2>Transactions</h2>
-				<Button variant="primary" onClick={getTransactions}>
-					GetTransactions
+				<h2>User orders</h2>
+				<Button variant="primary" onClick={getUserOrders}>
+					Get user orders
 				</Button>
 			</Container>
 		</div>
 	);
 };
 
-export default TransactionPage;
+export default UserOrders;
