@@ -11,7 +11,6 @@ const ExchangePage = () => {
 	const [selectedCoinTo, setSelectedCoinTo] = useState(tokenList[0].address);
 
 	const [balanceOfCoinFrom, setBalanceOfCoinFrom] = useState(0);
-	const [balanceOfCoinTo, setBalanceOfCoinTo] = useState(0);
 
 	const [amountFrom, setAmountFrom] = useState(0);
 	const [amountTo, setAmountTo] = useState(0);
@@ -23,7 +22,6 @@ const ExchangePage = () => {
 
 	const handleCoinChangeTo = event => {
 		setSelectedCoinTo(event.target.value);
-		getBalanceOfTokenOnContract(event.target.value, setBalanceOfCoinTo);
 	};
 
 	const handleAmountChangeFrom = event => {
@@ -54,13 +52,24 @@ const ExchangePage = () => {
 	}
 
 	useEffect(() => {
-		getBalanceOfTokenOnContract(selectedCoinFrom, setAmountFrom);
-		getBalanceOfTokenOnContract(selectedCoinTo, setAmountTo);
-		console.log(123);
+		getBalanceOfTokenOnContract(selectedCoinFrom, setBalanceOfCoinFrom);
 	}, []);
+
+	const checkExchangeParams = () => {
+		if (selectedCoinFrom === selectedCoinTo) {
+			alert("Coin from and coin to can't be the same!");
+			throw new Error("Coin from and coin to can't be the same!");
+		}
+		if (amountFrom <= 0 || amountTo <= 0) {
+			alert("Amount can't be <= 0!");
+			throw new Error("Amount can't be <= 0!");
+		}
+	};
 
 	const exchange = async () => {
 		try {
+			checkExchangeParams();
+
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
 			const accounts = await provider.send("eth_requestAccounts", []);
 			const walletAddress = accounts[0]; // first account in MetaMask
@@ -72,9 +81,8 @@ const ExchangePage = () => {
 				signer
 			);
 			const timespan = Math.floor(Date.now() / 1000);
-			console.log(timespan);
-			//Labelconst trade = await ExchangeContract.trade(selectedCoinFrom, amountFrom, selectedCoinTo, amountTo);
-			//console.log(trade);
+			const trade = await ExchangeContract.trade(selectedCoinFrom, amountFrom, selectedCoinTo, amountTo, timespan);
+			console.log(trade);
 		} catch (error) {
 			console.error("Error: ", error);
 		}
@@ -85,7 +93,6 @@ const ExchangePage = () => {
 			<Container>
 				<h2>Exchange</h2>
 				<h5 className="mt-5">Create an order to exchange cryptocurrency</h5>
-
 				<Form className="flex align-items-center">
 					<Form.Group as={Row} className="flex align-items-center mt-5">
 						<Form.Label>You pay:</Form.Label>
@@ -100,7 +107,7 @@ const ExchangePage = () => {
 							type="number"
 							placeholder="Enter amount"
 							onChange={handleAmountChangeFrom}
-							value={0}
+							value={amountFrom}
 							min="1"
 						/>
 						<Form.Label>You current balance on contract: {balanceOfCoinFrom}</Form.Label>
@@ -118,10 +125,9 @@ const ExchangePage = () => {
 							type="number"
 							placeholder="Enter amount"
 							onChange={handleAmountChangeTo}
-							value={0}
+							value={amountTo}
 							min="1"
 						/>
-						<Form.Label>You current balance on contract: {balanceOfCoinTo}</Form.Label>
 					</Form.Group>
 					<Button variant="primary" onClick={exchange} className="mt-5">
 						Send
