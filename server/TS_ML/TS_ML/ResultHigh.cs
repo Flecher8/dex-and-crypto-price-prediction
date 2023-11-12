@@ -1,4 +1,6 @@
-﻿namespace TS_ML
+﻿using System.Linq;
+
+namespace TS_ML
 {
     public class ResultHigh
     {

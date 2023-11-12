@@ -1,10 +1,12 @@
 ﻿using Microsoft.ML;
+using Microsoft.ML.Transforms.TimeSeries;
+using System.Linq;
 
 namespace TS_ML
 {
     public class TS
     {
-        public float[] GetMax(int day)
+        public MaxPrediction[] GetMax(int day)
         {
             var mlContext = new MLContext();
 
@@ -41,9 +43,20 @@ namespace TS_ML
             var forecastEngine = model.CreateTimeSeriesEngine<InputData, ResultHigh>(mlContext);
             var forecastOutput = forecastEngine.Predict();
 
-            return forecastOutput.ForecastedHigh;
+            var result = new List<MaxPrediction>();
+
+            for (int i = 0; i < forecastOutput.ForecastedHigh.Length; i++)
+            {
+                result.Add(new MaxPrediction
+                {
+                    Date = DateTime.Today.AddDays(i+1),
+                    High = forecastOutput.ForecastedHigh[i]
+                });
+            }
+
+            return result.ToArray();
         }
-        public float[] GetMin(int day)
+        public MinPrediction[] GetMin(int day)
         {
             var mlContext = new MLContext();
 
@@ -80,7 +93,18 @@ namespace TS_ML
             var forecastEngine = model.CreateTimeSeriesEngine<InputData, ResultLow>(mlContext);
             var forecastOutput = forecastEngine.Predict();
 
-            return forecastOutput.ForecastedLow;
+            var result = new List<MinPrediction>();
+
+            for (int i = 0; i < forecastOutput.ForecastedLow.Length; i++)
+            {
+                result.Add(new MinPrediction
+                {
+                    Date = DateTime.Today.AddDays(i + 1),
+                    Low = forecastOutput.ForecastedLow[i]
+                });
+            }
+
+            return result.ToArray();
         }
     }
 }
