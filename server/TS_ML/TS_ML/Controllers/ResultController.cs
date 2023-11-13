@@ -19,5 +19,18 @@ namespace TS_ML.Controllers
             TS ts = new TS();
             return Ok(ts.GetMax(days));
         }
+
+        [HttpGet("Max value history")]
+        public async Task<IActionResult> Get_Max_History()
+        {
+            TS ts = new TS();
+            return Ok(ts.GetMaxHistory());
+        }
+        [HttpGet("Min value history")]
+        public async Task<IActionResult> Get_Min_History()
+        {
+            TS ts = new TS();
+            return Ok(ts.GetMinHistory());
+        }
     }
 }
