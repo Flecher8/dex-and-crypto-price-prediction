@@ -13,6 +13,7 @@ import TransactionPage from "./pages/TransactionsPage/TransactionPage";
 import UserOrders from "./pages/UserOrders/UserOrders";
 import ActiveOrders from "./pages/ActiveOrders/ActiveOrders";
 import ExchangePage from "./pages/ExchangePage/ExchangePage";
+import AIPage from "./pages/AIPage/AIPage";
 
 function App() {
 	const [showMetaMaskConnectionError, setShowMetaMaskConnectionError] = useState(false);
@@ -91,6 +92,7 @@ function App() {
 						<Route path="/Transactions" element={<TransactionPage />} />
 						<Route path="/UserOrders" element={<UserOrders />} />
 						<Route path="/ActiveOrders" element={<ActiveOrders />} />
+						<Route path="/AI" element={<AIPage />} />
 						<Route path="/" element={<Navigate to="/Main" />} />
 					</Routes>
 				</>
