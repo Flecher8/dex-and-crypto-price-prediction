@@ -7,26 +7,26 @@ namespace TS_ML.Controllers
     public class ResultController : ControllerBase
     {
 
-        [HttpGet("Min value")]
+        [HttpGet("min_value")]
         public async Task<IActionResult> Get_Min(int days)
         {
             TS ts = new TS();
             return Ok(ts.GetMin(days));
         }
-        [HttpGet("Max value")]
+        [HttpGet("max_value")]
         public async Task<IActionResult> Get_Max(int days)
         {
             TS ts = new TS();
             return Ok(ts.GetMax(days));
         }
 
-        [HttpGet("Max value history")]
+        [HttpGet("max_value_history")]
         public async Task<IActionResult> Get_Max_History()
         {
             TS ts = new TS();
             return Ok(ts.GetMaxHistory());
         }
-        [HttpGet("Min value history")]
+        [HttpGet("min_value_history")]
         public async Task<IActionResult> Get_Min_History()
         {
             TS ts = new TS();
