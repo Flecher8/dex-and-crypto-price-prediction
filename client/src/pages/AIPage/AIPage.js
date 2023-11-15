@@ -174,7 +174,7 @@ const AIPage = () => {
 							plugins: {
 								title: {
 									display: true,
-									text: "Bitcoin History Price"
+									text: "Prediction Bitcoin Price"
 								}
 							},
 							scales: {
