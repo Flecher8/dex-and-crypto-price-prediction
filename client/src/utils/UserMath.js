@@ -1,5 +1,4 @@
 export function numberToHex(number) {
-	console.log(number);
 	try {
 		number = parseInt(number);
 	} catch (error) {
